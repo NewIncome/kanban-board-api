@@ -28,7 +28,8 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public void addTask(TaskDto taskDto) throws IOException {
-    taskCsvRepository.save(taskDto);
+    boolean savedTask = taskCsvRepository.save(taskDto);
+    if(!savedTask) throw new IllegalArgumentException("Task already exists!");
   }
 
   @Override

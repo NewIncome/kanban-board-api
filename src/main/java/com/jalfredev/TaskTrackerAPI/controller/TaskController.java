@@ -32,5 +32,5 @@ public class TaskController {
   public void deleteTask(@PathVariable UUID taskId) {
     taskService.deleteTask(taskId);
   }
-  
+
 }

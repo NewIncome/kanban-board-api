@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,7 +41,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
   }
 
   @Override
-  public void save(TaskDto taskDto) throws IOException {
+  public boolean save(TaskDto taskDto) throws IOException {
     String row = taskMapper.fromDto(taskDto);
 
     Files.write(
@@ -48,6 +49,27 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
         row.getBytes(),
         StandardOpenOption.APPEND
     );
+
+    return existsById(taskDto.id());
+  }
+
+  @Override
+  public void delete(UUID taskId) throws IOException {
+    List<String> lines = Files.readAllLines(FILE_PATH);
+
+    int originalSize = lines.size();
+
+    List<String> updatedLines = lines.stream()
+          .filter(line -> !line.startsWith(taskId.toString() + ","))
+          .toList();
+
+    if(updatedLines.size() != originalSize) {
+      Files.write(
+          FILE_PATH,
+          updatedLines,
+          StandardOpenOption.TRUNCATE_EXISTING
+      );
+    }
   }
 
 
@@ -59,6 +81,15 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     if (Files.notExists(FILE_PATH)) {
       Files.createFile(FILE_PATH);
       Files.write(FILE_PATH, (HEADER + System.lineSeparator()).getBytes());
+    }
+  }
+
+  //to confirm task(row) existence and prevents duplicates
+  private boolean existsById(UUID id) throws IOException {
+    try (Stream<String> lines = Files.lines(FILE_PATH)) {
+    return lines
+        .skip(1)
+        .anyMatch(line -> line.startsWith(id.toString() + ","));
     }
   }
 
