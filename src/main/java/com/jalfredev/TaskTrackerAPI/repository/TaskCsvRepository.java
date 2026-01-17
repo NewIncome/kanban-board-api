@@ -10,5 +10,5 @@ public interface TaskCsvRepository {
   List<TaskDto> findAll() throws IOException;
 
   void save(TaskDto taskDto) throws IOException;
-  
+
 }
