@@ -37,8 +37,19 @@ public class TaskCsvRepositoryImplIntegrationTests {
 
   @Test
   public void testThatTaskCsvRepoCorrectlyCreatesABasePath() throws IOException {
-    //Path csv = tempDir.resolve("tasks.csv");
     assertTrue(Files.exists(tempDir));
+    assertTrue(Files.isDirectory(tempDir));
+    assertTrue(Files.exists(tempDir.resolve("tasks.csv")));
+    assertFalse(Files.isDirectory(tempDir.resolve("tasks.csv")));
+    assertTrue(Files.isRegularFile(tempDir.resolve("tasks.csv")));
+
+    assertEquals(
+        tempDir + "/tasks.csv",
+        tempDir.resolve("tasks.csv").toString()
+    );
+
+    assertThat(Files.readAllLines(tempDir.resolve("tasks.csv")))
+        .contains ("id,content,column");
   }
 
   @Test
@@ -53,11 +64,7 @@ public class TaskCsvRepositoryImplIntegrationTests {
 
     taskCsvRepository.save(newTaskDto);
 
-    /*//Debug lines
     System.out.println("csvFile = " + csvFile);
-    System.out.println("exists = " + Files.exists(csvFile));
-    System.out.println("isDirectory = " + Files.isDirectory(csvFile));
-    System.out.println("isRegularFile = " + Files.isRegularFile(csvFile));*/
 
     List<String> lines = Files.readAllLines(csvFile);
     assertEquals("id,content,column", lines.get(0));
@@ -65,8 +72,37 @@ public class TaskCsvRepositoryImplIntegrationTests {
     assertThat(lines.get(1)).contains(String.format("%s, %s, %s",
         newTaskDto.id().toString(),
         "This is a new Task",
-        Column.TO_DO.toString() )
+        "TO_DO" )
     );
+  }
+
+  @Test
+  public void testThatTaskCsvRepoCorrectlyListsAllTasks() throws IOException {
+    //Create 2 tasks
+    TaskDto taskDto1 = new TaskDto(UUID.randomUUID(), "1st Task", Column.TO_DO);
+    TaskDto taskDto2 = new TaskDto(UUID.randomUUID(), "2nd Task", Column.IN_PROGRESS);
+    taskCsvRepository.save(taskDto1);
+    taskCsvRepository.save(taskDto2);
+
+    List<String> lines = Files.readAllLines(tempDir.resolve("tasks.csv"));
+    assertThat(lines).hasSize(3);
+    assertThat(lines.get(1)).contains("1st Task");
+    assertThat(lines.get(2)).contains("2nd Task");
+  }
+
+  @Test
+  public void testThatTaskCsvRepoCorrectlyDeletesATaskRow() throws IOException {
+    //Create a Task, assert it's there, then delete it
+    TaskDto taskDto = new TaskDto(UUID.randomUUID(), "Task numero 1", Column.TO_DO);
+    taskCsvRepository.save(taskDto);
+
+    List<String> lines = Files.readAllLines(tempDir.resolve("tasks.csv"));
+    assertThat(lines).hasSize(2);
+    assertThat(lines.get(1)).isEqualTo(taskDto.id().toString() + ", Task numero 1, TO_DO");
+
+    taskCsvRepository.delete(taskDto.id());
+    lines = Files.readAllLines(tempDir.resolve("tasks.csv"));
+    assertThat(lines).hasSize(1);
   }
 
 }
