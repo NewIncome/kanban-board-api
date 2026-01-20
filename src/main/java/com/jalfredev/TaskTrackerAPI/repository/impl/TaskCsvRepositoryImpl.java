@@ -30,6 +30,14 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     this.taskMapper = taskMapper;
     initializeFile();
   }
+  /* @Value,
+   * Typically used for expression-driven or property-driven dependency injection.
+   * Also supported for dynamic resolution of handler method arguments — for example,
+   * in Spring MVC.
+   * A common use case is to inject values using #{systemProperties.myProp} style
+   * SpEL (Spring Expression Language) expressions. Alternatively, values may be
+   * injected using ${my.app.myProp} style property placeholders.
+   */
 
 
   @Override
@@ -77,13 +85,22 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
 
 
   private void initializeFile() throws IOException {
-    // Ensure parent directory exists
-    if (Files.notExists(filePath.getParent())) Files.createDirectories(filePath.getParent());
+    // 1️⃣ Create parent directories ONLY
+    Path parentDir = filePath.getParent();
+    if (parentDir != null) {
+      Files.createDirectories(parentDir);
+    }
 
-    // Create file if missing
-    if (Files.notExists(filePath)) {
+    // 2️⃣ Create the file if it does not exist
+    if (!Files.exists(filePath)) {
       Files.createFile(filePath);
-      Files.write(filePath, (HEADER + System.lineSeparator()).getBytes());
+
+      // 3️⃣ Write header
+      Files.writeString(
+          filePath,
+          "id,content,column" + System.lineSeparator(),
+          StandardOpenOption.WRITE
+      );
     }
   }
 
