@@ -29,7 +29,6 @@ public class TaskServiceImpl implements TaskService {
     TaskDto completeTaskDto = new TaskDto(
         UUID.randomUUID(), taskDto.content(), taskDto.column()
     );
-    System.out.println("\n ----- INSIDE TASK_SERVICE_IMPL !!! ----- \n");
     boolean savedTask = taskCsvRepository.save(completeTaskDto);
     if(savedTask) return completeTaskDto;
     else throw new IllegalArgumentException("Task already exists!");

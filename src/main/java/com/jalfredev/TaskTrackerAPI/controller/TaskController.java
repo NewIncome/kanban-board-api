@@ -2,6 +2,8 @@ package com.jalfredev.TaskTrackerAPI.controller;
 
 import com.jalfredev.TaskTrackerAPI.domain.TaskDto;
 import com.jalfredev.TaskTrackerAPI.service.TaskService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -24,8 +26,9 @@ public class TaskController {
   }
 
   @PostMapping
-  public TaskDto createTask(@RequestBody TaskDto taskDto) throws IOException {
-    return taskService.addTask(taskDto);
+  public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto) throws IOException {
+    TaskDto createdTask = taskService.addTask(taskDto);
+    return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
   }
 
   @DeleteMapping("/{task_id}")

@@ -4,19 +4,32 @@ import com.jalfredev.TaskTrackerAPI.domain.Column;
 import com.jalfredev.TaskTrackerAPI.domain.TaskDto;
 import com.jalfredev.TaskTrackerAPI.service.TaskService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 
+import java.nio.file.Path;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerIntegrationTests {
+
+  @TempDir
+  static Path tempDir;
+
+  @DynamicPropertySource
+  static void overrideProps(DynamicPropertyRegistry registry) {
+    registry.add("app.data.dir", ()->tempDir.toString());
+  }
 
   private final MockMvc mockMvc;
 
