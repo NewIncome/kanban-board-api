@@ -2,7 +2,6 @@ package com.jalfredev.TaskTrackerAPI.service.impl;
 
 import com.jalfredev.TaskTrackerAPI.domain.TaskDto;
 import com.jalfredev.TaskTrackerAPI.repository.TaskCsvRepository;
-import com.jalfredev.TaskTrackerAPI.repository.impl.TaskCsvRepositoryImpl;
 import com.jalfredev.TaskTrackerAPI.service.TaskService;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ public class TaskServiceImpl implements TaskService {
 
   public TaskServiceImpl(TaskCsvRepository taskCsvRepository) {
     this.taskCsvRepository = taskCsvRepository;
-
   }
 
 
@@ -27,9 +25,14 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void addTask(TaskDto taskDto) throws IOException {
-    boolean savedTask = taskCsvRepository.save(taskDto);
-    if(!savedTask) throw new IllegalArgumentException("Task already exists!");
+  public TaskDto addTask(TaskDto taskDto) throws IOException {
+    TaskDto completeTaskDto = new TaskDto(
+        UUID.randomUUID(), taskDto.content(), taskDto.column()
+    );
+    System.out.println("\n ----- INSIDE TASK_SERVICE_IMPL !!! ----- \n");
+    boolean savedTask = taskCsvRepository.save(completeTaskDto);
+    if(savedTask) return completeTaskDto;
+    else throw new IllegalArgumentException("Task already exists!");
   }
 
   @Override

@@ -10,7 +10,7 @@ public interface TaskService {
 
   List<TaskDto> getTasks() throws IOException;
 
-  void addTask(TaskDto taskDto) throws IOException;
+  TaskDto addTask(TaskDto taskDto) throws IOException;
 
   void deleteTask(UUID taskId);
 

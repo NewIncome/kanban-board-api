@@ -24,8 +24,8 @@ public class TaskController {
   }
 
   @PostMapping
-  public void createTask(@RequestBody TaskDto taskDto) throws IOException {
-    taskService.addTask(taskDto);
+  public TaskDto createTask(@RequestBody TaskDto taskDto) throws IOException {
+    return taskService.addTask(taskDto);
   }
 
   @DeleteMapping("/{task_id}")

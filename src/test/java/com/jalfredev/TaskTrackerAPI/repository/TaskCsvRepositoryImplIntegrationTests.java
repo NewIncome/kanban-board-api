@@ -64,8 +64,6 @@ public class TaskCsvRepositoryImplIntegrationTests {
 
     taskCsvRepository.save(newTaskDto);
 
-    System.out.println("csvFile = " + csvFile);
-
     List<String> lines = Files.readAllLines(csvFile);
     assertEquals("id,content,column", lines.get(0));
     //assertEquals(newTaskDto.id().toString(), lines.get(1).split(",")[0]);
