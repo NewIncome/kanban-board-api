@@ -32,8 +32,13 @@ public class TaskController {
   }
 
   @DeleteMapping("/{task_id}")
-  public void deleteTask(@PathVariable UUID taskId) {
-    taskService.deleteTask(taskId);
+  public ResponseEntity deleteTask(@PathVariable("task_id") UUID taskId) {
+    try {
+      taskService.deleteTask(taskId);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
 }

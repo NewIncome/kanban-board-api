@@ -12,7 +12,7 @@ public class TaskMapperImpl implements TaskMapper {
 
   @Override
   public TaskDto toDto(String taskRow) {
-    String[] fields = taskRow.split("");
+    String[] fields = taskRow.split(", ");
 
     return new TaskDto(
         UUID.fromString(fields[0]),

@@ -64,6 +64,46 @@ public class TaskControllerIntegrationTests {
         MockMvcResultMatchers.jsonPath("$.content").value("My first Task")
     ).andExpect(
         MockMvcResultMatchers.jsonPath("$.column").value("TO_DO")
+    ).andExpect(
+        MockMvcResultMatchers.status().isCreated()
+    );
+  }
+
+  @Test
+  public void testThatListAllTasksCorrectlyListsAllSavedTasksWithStatusCode200() throws Exception {
+    TaskDto taskDto1 = new TaskDto(null,"My first Task", Column.DONE);
+    TaskDto taskDto2 = new TaskDto(null,"My second Task", Column.TO_DO);
+    taskService.addTask(taskDto1);
+    taskService.addTask(taskDto2);
+
+    mockMvc.perform(
+        MockMvcRequestBuilders
+            .get("/api/tasks")
+            .contentType(MediaType.APPLICATION_JSON)
+    ).andExpect(
+        MockMvcResultMatchers.jsonPath("$[0].content").value("My first Task")
+    ).andExpect(
+        MockMvcResultMatchers.jsonPath("$[0].column").value("DONE")
+    ).andExpect(
+        MockMvcResultMatchers.jsonPath("$[1].content").value("My second Task")
+    ).andExpect(
+        MockMvcResultMatchers.jsonPath("$[1].column").value("TO_DO")
+    ).andExpect(
+        MockMvcResultMatchers.status().isOk()
+    );
+  }
+
+  @Test
+  public void testThatDeleteTaskCorrectlyRemovesATaskRow() throws Exception {
+    TaskDto taskDto = new TaskDto(null,"My second Task", Column.TO_DO);
+    TaskDto createdTaskDto = taskService.addTask(taskDto);
+
+    mockMvc.perform(
+        MockMvcRequestBuilders
+            .delete("/api/tasks/" + createdTaskDto.id())
+            .contentType(MediaType.APPLICATION_JSON)
+    ).andExpect(
+        MockMvcResultMatchers.status().isNoContent()
     );
   }
 
