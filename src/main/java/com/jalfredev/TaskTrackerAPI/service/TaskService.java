@@ -12,6 +12,6 @@ public interface TaskService {
 
   TaskDto addTask(TaskDto taskDto) throws IOException;
 
-  void deleteTask(UUID taskId);
+  void deleteTask(UUID taskId) throws IOException;
 
 }

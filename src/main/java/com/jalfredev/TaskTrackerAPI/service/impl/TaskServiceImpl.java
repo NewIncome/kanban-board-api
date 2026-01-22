@@ -1,5 +1,6 @@
 package com.jalfredev.TaskTrackerAPI.service.impl;
 
+import com.jalfredev.TaskTrackerAPI.domain.Column;
 import com.jalfredev.TaskTrackerAPI.domain.TaskDto;
 import com.jalfredev.TaskTrackerAPI.repository.TaskCsvRepository;
 import com.jalfredev.TaskTrackerAPI.service.TaskService;
@@ -26,8 +27,11 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public TaskDto addTask(TaskDto taskDto) throws IOException {
+    Column column = taskDto.column() == null ? Column.TO_DO : taskDto.column();
     TaskDto completeTaskDto = new TaskDto(
-        UUID.randomUUID(), taskDto.content(), taskDto.column()
+        UUID.randomUUID(),
+        taskDto.content(),
+         column
     );
     boolean savedTask = taskCsvRepository.save(completeTaskDto);
     if(savedTask) return completeTaskDto;
@@ -35,8 +39,8 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void deleteTask(UUID taskId) {
-
+  public void deleteTask(UUID taskId) throws IOException {
+    taskCsvRepository.delete(taskId);
   }
 
 }
