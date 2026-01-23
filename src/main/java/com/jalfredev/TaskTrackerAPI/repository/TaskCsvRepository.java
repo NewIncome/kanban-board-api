@@ -14,4 +14,6 @@ public interface TaskCsvRepository {
 
   void delete(UUID taskId) throws IOException;
 
+  TaskDto updateTask(UUID taskId, TaskDto taskDto) throws IOException;
+
 }

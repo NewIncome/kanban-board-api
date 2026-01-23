@@ -43,4 +43,9 @@ public class TaskServiceImpl implements TaskService {
     taskCsvRepository.delete(taskId);
   }
 
+  @Override
+  public TaskDto updateTask(UUID taskId, TaskDto taskDto) throws IOException {
+    return taskCsvRepository.updateTask(taskId, taskDto);
+  }
+
 }

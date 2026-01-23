@@ -14,4 +14,6 @@ public interface TaskService {
 
   void deleteTask(UUID taskId) throws IOException;
 
+  TaskDto updateTask(UUID taskId, TaskDto taskDto) throws IOException;
+
 }

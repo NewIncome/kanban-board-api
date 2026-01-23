@@ -1,5 +1,6 @@
 package com.jalfredev.TaskTrackerAPI.repository.impl;
 
+import com.jalfredev.TaskTrackerAPI.domain.Column;
 import com.jalfredev.TaskTrackerAPI.domain.TaskDto;
 import com.jalfredev.TaskTrackerAPI.mapper.TaskMapper;
 import com.jalfredev.TaskTrackerAPI.repository.TaskCsvRepository;
@@ -81,6 +82,35 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
           StandardOpenOption.TRUNCATE_EXISTING
       );
     }
+  }
+
+  @Override
+  public TaskDto updateTask(UUID taskId, TaskDto taskDto) throws IOException {
+    if(!existsById(taskId)) return null;
+
+    List<String> lines = Files.readAllLines(filePath);
+    List<String> updatedLines = lines.stream().map(line -> {
+      if(line.startsWith(taskId.toString() + ", ")) {
+        TaskDto prevTask = taskMapper.toDto(line);
+
+        //update info if there's an update to be done
+        String newContent = taskDto.content() != prevTask.content()
+                              ? taskDto.content() : prevTask.content();
+        Column newColumn = taskDto.column() != prevTask.column()
+                              ? taskDto.column() : prevTask.column();
+
+        return taskMapper.fromDto(new TaskDto(taskId, newContent, newColumn));
+      }
+      return line;
+    }).toList();
+
+    Files.write(
+        filePath,
+        updatedLines,
+        StandardOpenOption.TRUNCATE_EXISTING
+    );
+
+    return taskDto;
   }
 
 
