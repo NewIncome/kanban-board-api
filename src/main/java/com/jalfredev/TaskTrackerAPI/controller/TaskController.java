@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+
+//@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -39,6 +41,13 @@ public class TaskController {
       throw new RuntimeException(e);
     }
     return new ResponseEntity(HttpStatus.NO_CONTENT);
+  }
+
+  @PatchMapping("/{task_id}")
+  public ResponseEntity<TaskDto> partialUpdateTask(@PathVariable("task_id") UUID taskId,
+                                                   @RequestBody TaskDto taskDto) throws IOException {
+    TaskDto editedTask = taskService.updateTask(taskId, taskDto);
+    return new ResponseEntity(editedTask, HttpStatus.OK);
   }
 
 }

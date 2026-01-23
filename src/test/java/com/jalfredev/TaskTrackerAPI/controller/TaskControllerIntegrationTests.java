@@ -107,4 +107,28 @@ public class TaskControllerIntegrationTests {
     );
   }
 
+  @Test
+  public void testThatPartialUpdateTaskCorrectlyUpdatesATask() throws Exception {
+    TaskDto taskDto = new TaskDto(null, "My last task", Column.IN_PROGRESS);
+    TaskDto createdTask = taskService.addTask(taskDto);
+
+    TaskDto modifiedTask = new TaskDto(createdTask.id(), "My lasto task", Column.DONE);
+    String modifiedTaskJson = objectMapper.writeValueAsString(modifiedTask);
+
+    mockMvc.perform(
+        MockMvcRequestBuilders
+              .patch("/api/tasks/" + createdTask.id())
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(modifiedTaskJson)
+    ).andExpect(
+        MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+        MockMvcResultMatchers.jsonPath("$.id").value(createdTask.id().toString())
+    ).andExpect(
+        MockMvcResultMatchers.jsonPath("$.content").value(modifiedTask.content())
+    ).andExpect(
+        MockMvcResultMatchers.jsonPath("$.column").value(modifiedTask.column().toString())
+    );
+  }
+
 }
