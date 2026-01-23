@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 
-//@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
+
+  private static final String TASK_ID = "/{task_id}";
 
   private final TaskService taskService;
 
@@ -33,7 +35,7 @@ public class TaskController {
     return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
   }
 
-  @DeleteMapping("/{task_id}")
+  @DeleteMapping(TASK_ID)
   public ResponseEntity deleteTask(@PathVariable("task_id") UUID taskId) {
     try {
       taskService.deleteTask(taskId);
@@ -43,7 +45,7 @@ public class TaskController {
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
-  @PatchMapping("/{task_id}")
+  @PatchMapping(TASK_ID)
   public ResponseEntity<TaskDto> partialUpdateTask(@PathVariable("task_id") UUID taskId,
                                                    @RequestBody TaskDto taskDto) throws IOException {
     TaskDto editedTask = taskService.updateTask(taskId, taskDto);
