@@ -24,7 +24,7 @@ public class TaskMapperImpl implements TaskMapper {
   @Override
   public String fromDto(TaskDto taskDto) {
     return String.format(
-        "%s, %s, %s%n",
+        "%s, %s, %s",
         taskDto.id(),
         taskDto.content(),
         taskDto.column()

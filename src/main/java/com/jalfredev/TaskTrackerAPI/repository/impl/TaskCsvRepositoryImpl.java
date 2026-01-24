@@ -54,7 +54,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
 
   @Override
   public boolean save(TaskDto taskDto) throws IOException {
-    String row = taskMapper.fromDto(taskDto);
+    String row = taskMapper.fromDto(taskDto) + "\n";
 
     Files.write(
         filePath,
@@ -122,7 +122,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     }
 
     // 2️⃣ Create the file if it does not exist
-    if (!Files.exists(filePath)) {
+    if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
       Files.createFile(filePath);
 
       // 3️⃣ Write header

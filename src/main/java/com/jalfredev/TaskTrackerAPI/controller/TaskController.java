@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.UUID;
 
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(
+    origins = "http://localhost:5173",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.DELETE, RequestMethod.OPTIONS}
+)
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
