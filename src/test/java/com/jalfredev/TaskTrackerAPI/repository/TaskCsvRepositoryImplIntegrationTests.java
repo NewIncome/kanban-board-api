@@ -103,4 +103,19 @@ public class TaskCsvRepositoryImplIntegrationTests {
     assertThat(lines).hasSize(1);
   }
 
+  @Test
+  public void testThatTaskCsvRepoCorrectlyUpdatesATaskRow() throws IOException {
+    //Create a Task, assert it's there, then delete it
+    TaskDto taskDto = new TaskDto(UUID.randomUUID(), "Task numero 1", Column.TO_DO);
+    taskCsvRepository.save(taskDto);
+
+    TaskDto updatedTaskDto = new TaskDto(null, "Task number Uno", Column.IN_PROGRESS);
+    taskCsvRepository.updateTask(taskDto.id(), updatedTaskDto);
+
+    List<String> lines = Files.readAllLines(tempDir.resolve("tasks.csv"));
+    assertThat(lines).hasSize(2);
+    assertThat(lines.get(1)).contains(updatedTaskDto.content());
+    assertThat(lines.get(1)).contains(updatedTaskDto.column().toString());
+  }
+
 }
