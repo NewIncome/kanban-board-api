@@ -12,7 +12,7 @@ import java.util.UUID;
 
 
 @CrossOrigin(
-    origins = "http://localhost:5173",
+    origins = "https://react-kanban-board.jalfred.dev",
     methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.DELETE, RequestMethod.OPTIONS}
 )
 @RestController
