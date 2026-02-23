@@ -4,7 +4,9 @@ import com.jalfredev.TaskTrackerAPI.domain.Column;
 import com.jalfredev.TaskTrackerAPI.domain.TaskDto;
 import com.jalfredev.TaskTrackerAPI.mapper.TaskMapper;
 import com.jalfredev.TaskTrackerAPI.repository.TaskCsvRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -24,11 +26,17 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
 
   private final TaskMapper taskMapper;
 
+  @Autowired
+  private Environment env;
+
   public TaskCsvRepositoryImpl(
                 @Value("${app.data.dir}") Path dataDir,
                 TaskMapper taskMapper) throws IOException {
+    System.out.println("\n --- Debug output:");
+    if(env != null) System.out.println("  FilePath before:  " + env.getProperty("app.cors.allowed-origins"));
     this.filePath = dataDir.resolve("tasks.csv");
     this.taskMapper = taskMapper;
+    if(env != null) System.out.println("  FilePath after:  " + env.getProperty("app.cors.allowed-origins"));
     initializeFile();
   }
   /* @Value,
